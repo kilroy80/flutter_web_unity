@@ -3,6 +3,7 @@
 // package as the core of your plugin.
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html show window;
+import 'dart:ui' as ui;
 
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
@@ -11,7 +12,12 @@ import 'flutter_web_unity_platform_interface.dart';
 /// A web implementation of the FlutterWebUnityPlatform of the FlutterWebUnity plugin.
 class FlutterWebUnityWeb extends FlutterWebUnityPlatform {
   /// Constructs a FlutterWebUnityWeb
-  FlutterWebUnityWeb();
+  FlutterWebUnityWeb() {
+    // ignore: undefined_prefixed_name
+    final webUrl = ui.webOnlyAssetManager.getAssetUrl(
+      'packages/flutter_web_unity/assets/unity.html',
+    );
+  }
 
   static void registerWith(Registrar registrar) {
     FlutterWebUnityPlatform.instance = FlutterWebUnityWeb();
