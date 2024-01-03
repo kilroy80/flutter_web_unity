@@ -7,8 +7,6 @@
   </head>
   <body style="padding: 0px; margin: 0px; overflow: hidden; text-align: center;">
     <canvas id="unity-canvas" style="width: 100vw; height: 100vh; background: transparent"></canvas>
-<!--    <script src="Build/UnityLibrary.loader.js"></script>-->
-    
     <script>
         var mainUnityInstance;
 
@@ -49,18 +47,20 @@
       }
 
       const urlParams = new URLSearchParams(window.location.search);
-      const param = urlParams.get('dataUrl');
-      console.log(param);
+      const dataParam = urlParams.get('data');
+
+      const jsonData = JSON.parse(atob(dataParam));
+      console.log('object = ' + JSON.stringify(jsonData));
 
       createUnity();
 
         async function createUnity() {
             try {
-                await addScript("/unity/Build/UnityLibrary.loader.js");
+                await addScript(jsonData.loaderUrl);
                 await createUnityInstance(document.querySelector("#unity-canvas"), {
-                    dataUrl: "/unity/Build/UnityLibrary.data.unityweb",
-                    frameworkUrl: "/unity/Build/UnityLibrary.framework.js.unityweb",
-                    codeUrl: "/unity/Build/UnityLibrary.wasm.unityweb",
+                    dataUrl: jsonData.dataUrl,
+                    frameworkUrl: jsonData.frameworkUrl,
+                    codeUrl: jsonData.codeUrl,
                     streamingAssetsUrl: "StreamingAssets",
                     companyName: "Seerslab",
                     productName: "AvatarViewer",
