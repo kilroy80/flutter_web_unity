@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity WebGL</title>
+  </head>
+  <body style="padding: 0px; margin: 0px; overflow: hidden; text-align: center;">
+    <canvas id="unity-canvas" style="width: 100vw; height: 100vh; background: transparent"></canvas>
+<!--    <script src="Build/UnityLibrary.loader.js"></script>-->
+    
+    <script>
+        var mainUnityInstance;
+
+        window['handleUnityMessage'] = function (params) {
+        window.parent.postMessage({
+            name: 'onUnityMessage',
+            data: params,
+            }, '*');
+        };
+
+        window['handleUnitySceneLoaded'] = function (name, buildIndex, isLoaded, isValid) {
+        window.parent.postMessage({
+            name: 'onUnitySceneLoaded',
+            data: {
+                'name': name,
+                'buildIndex': buildIndex,
+                'isLoaded': isLoaded == 1,
+                'isValid': isValid == 1,
+            }
+            }, '*');
+        };
+
+        window.parent.addEventListener('unityFlutterBiding', function (args) {
+            const obj = JSON.parse(args.data);
+            mainUnityInstance.SendMessage(obj.gameObject, obj.methodName, obj.message);
+        });
+
+        window.parent.addEventListener('unityFlutterBidingFnCal', function (args) {
+            mainUnityInstance.SendMessage('GameManager', 'HandleWebFnCall', args);
+        });
+        
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+      }
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const param = urlParams.get('dataUrl');
+      console.log(param);
+
+      createUnity();
+
+        async function createUnity() {
+            try {
+                await addScript("Build/UnityLibrary.loader.js");
+                await createUnityInstance(document.querySelector("#unity-canvas"), {
+                    dataUrl: "Build/UnityLibrary.data.unityweb",
+                    frameworkUrl: "Build/UnityLibrary.framework.js.unityweb",
+                    codeUrl: "Build/UnityLibrary.wasm.unityweb",
+                    streamingAssetsUrl: "StreamingAssets",
+                    companyName: "Seerslab",
+                    productName: "AvatarViewer",
+                    productVersion: "0.1",
+                    // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
+                    // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
+                });
+            } catch (e) {
+            }
+        }
+
+        function addScript(src) {
+            return new Promise((resolve, reject) => {
+                const s = document.createElement('script');
+
+                s.setAttribute('src', src);
+                s.addEventListener('load', resolve);
+                s.addEventListener('error', reject);
+
+                document.body.appendChild(s);
+            });
+        }
+
+    </script>
+  </body>
+</html>
