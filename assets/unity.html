@@ -56,11 +56,11 @@
 
         async function createUnity() {
             try {
-                await addScript("Build/UnityLibrary.loader.js");
+                await addScript("/unity/Build/UnityLibrary.loader.js");
                 await createUnityInstance(document.querySelector("#unity-canvas"), {
-                    dataUrl: "Build/UnityLibrary.data.unityweb",
-                    frameworkUrl: "Build/UnityLibrary.framework.js.unityweb",
-                    codeUrl: "Build/UnityLibrary.wasm.unityweb",
+                    dataUrl: "/unity/Build/UnityLibrary.data.unityweb",
+                    frameworkUrl: "/unity/Build/UnityLibrary.framework.js.unityweb",
+                    codeUrl: "/unity/Build/UnityLibrary.wasm.unityweb",
                     streamingAssetsUrl: "StreamingAssets",
                     companyName: "Seerslab",
                     productName: "AvatarViewer",
