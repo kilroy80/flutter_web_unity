@@ -1,7 +1,7 @@
 library flutter_web_unity;
 
-export 'package:flutter_web_unity/src/canvas_web.dart';
-export 'package:flutter_web_unity/src/canvas_platform_mobile.dart';
+export 'package:flutter_web_unity/src/html_web_widget.dart';
+export 'package:flutter_web_unity/src/html_web_widget_platform_mobile.dart';
 
 export 'package:flutter_web_unity/flutter_web_unity.dart';
 export 'package:flutter_web_unity/flutter_web_unity_method_channel.dart';

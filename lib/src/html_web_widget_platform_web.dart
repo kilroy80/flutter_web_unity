@@ -4,10 +4,9 @@ import 'dart:js_interop';
 import 'package:flutter/material.dart';
 
 import 'dart:ui_web' as ui;
-// import 'package:universal_html/html.dart' as html;
 import 'dart:html' as html;
 
-import 'package:flutter_web_unity/src/canvas_web.dart';
+import 'package:flutter_web_unity/src/html_web_widget.dart';
 
 @JS('createUnityNative')
 external void createUnityNative(String name);
@@ -15,34 +14,29 @@ external void createUnityNative(String name);
 @JS('deleteUnityNative')
 external void deleteUnityNative();
 
-class CanvasPlatform extends StatefulWidget {
-  const CanvasPlatform({
+class HtmlWebWidgetPlatform extends StatefulWidget {
+  const HtmlWebWidgetPlatform({
     super.key,
+    required this.data,
     this.controller,
     this.useCanvas = false,
   });
 
-  final CanvasPlatformCtrlImpl? controller;
+  final Map<String, dynamic> data;
+  final HtmlWebWidgetPlatformCtrlImpl? controller;
   final bool? useCanvas;
 
   @override
-  State<CanvasPlatform> createState() => _CanvasPlatformState();
+  State<HtmlWebWidgetPlatform> createState() => _HtmlWebWidgetPlatformState();
 }
 
-class _CanvasPlatformState extends State<CanvasPlatform> {
+class _HtmlWebWidgetPlatformState extends State<HtmlWebWidgetPlatform> {
 
   @override
   void initState() {
     super.initState();
 
-    final unityData = {
-      'loaderUrl': '/unity/Build/UnityLibrary.loader.js',
-      'dataUrl': '/unity/Build/UnityLibrary.data.unityweb',
-      'frameworkUrl': '/unity/Build/UnityLibrary.framework.js.unityweb',
-      'codeUrl': '/unity/Build/UnityLibrary.wasm.unityweb',
-    };
-
-    final sendData = base64.encode(utf8.encode(jsonEncode(unityData)));
+    final sendData = base64.encode(utf8.encode(jsonEncode(widget.data)));
 
     // ignore: undefined_prefixed_name
     ui.platformViewRegistry.registerViewFactory('unity-canvas', (viewId) {
@@ -114,9 +108,9 @@ class _CanvasPlatformState extends State<CanvasPlatform> {
   }
 }
 
-class CanvasPlatformCtrlImpl implements CanvasPlatformCtrl {
-  late _CanvasPlatformState _state;
-  void _setState(_CanvasPlatformState state) {
+class HtmlWebWidgetPlatformCtrlImpl implements HtmlWebWidgetPlatformCtrl {
+  late _HtmlWebWidgetPlatformState _state;
+  void _setState(_HtmlWebWidgetPlatformState state) {
     _state = state;
   }
 
