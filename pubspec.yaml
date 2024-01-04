@@ -46,7 +46,7 @@ flutter:
         fileName: flutter_web_unity_web.dart
 
   assets:
-    - assets/unity.html
+    - assets/unity/index.html
 
   # For details regarding assets in packages, see
   # https://flutter.dev/assets-and-images/#from-packages

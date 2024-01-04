@@ -39,7 +39,7 @@ class _HtmlWebWidgetPlatformState extends State<HtmlWebWidgetPlatform> {
     final sendData = base64.encode(utf8.encode(jsonEncode(widget.data)));
 
     // ignore: undefined_prefixed_name
-    ui.platformViewRegistry.registerViewFactory('unity-canvas', (viewId) {
+    ui.platformViewRegistry.registerViewFactory('html-element', (viewId) {
 
       if (widget.useCanvas == true) {
         return html.CanvasElement()
@@ -50,9 +50,9 @@ class _HtmlWebWidgetPlatformState extends State<HtmlWebWidgetPlatform> {
       } else {
         debugPrint('${Uri.base.scheme}://${Uri.base.host}:${Uri.base.port}');
         return html.IFrameElement()
-          ..id = 'unity-iframe'
+          // ..id = 'unity-iframe'
           // ..src = 'http://localhost:${Uri.base.port}/unity/index.html'
-          ..src = '${Uri.base.scheme}://${Uri.base.host}:${Uri.base.port}/assets/packages/flutter_web_unity/assets/unity.html?data=$sendData'
+          ..src = '${Uri.base.scheme}://${Uri.base.host}:${Uri.base.port}/assets/packages/flutter_web_unity/assets/unity/index.html?data=$sendData'
           ..style.border = 'none';
       }
 
@@ -85,12 +85,14 @@ class _HtmlWebWidgetPlatformState extends State<HtmlWebWidgetPlatform> {
 
   Future<void> quitUnity() async {
     if (!mounted) return;
-    try {
-      deleteUnityNative();
-    } catch (e) {
-      debugPrint(e.toString());
-    }
 
+    if (widget.useCanvas == true) {
+      try {
+        deleteUnityNative();
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+    }
     // await Future.delayed(const Duration(milliseconds: 250));
   }
 
@@ -101,7 +103,7 @@ class _HtmlWebWidgetPlatformState extends State<HtmlWebWidgetPlatform> {
       height: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - 56.0,
       child: const Stack(
         children: [
-          HtmlElementView(viewType: 'unity-canvas'),
+          HtmlElementView(viewType: 'html-element'),
         ],
       ),
     );
