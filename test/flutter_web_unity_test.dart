@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_web_unity/flutter_web_unity.dart';
+import 'package:flutter_web_unity/flutter_web_unity_native.dart';
 import 'package:flutter_web_unity/flutter_web_unity_platform_interface.dart';
 import 'package:flutter_web_unity/flutter_web_unity_method_channel.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';

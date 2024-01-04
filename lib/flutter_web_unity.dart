@@ -1,8 +1,9 @@
+library flutter_web_unity;
 
-import 'flutter_web_unity_platform_interface.dart';
+export 'package:flutter_web_unity/src/canvas_web.dart';
+export 'package:flutter_web_unity/src/canvas_platform_mobile.dart';
 
-class FlutterWebUnity {
-  Future<String?> getPlatformVersion() {
-    return FlutterWebUnityPlatform.instance.getPlatformVersion();
-  }
-}
+export 'package:flutter_web_unity/flutter_web_unity.dart';
+export 'package:flutter_web_unity/flutter_web_unity_method_channel.dart';
+export 'package:flutter_web_unity/flutter_web_unity_platform_interface.dart';
+export 'package:flutter_web_unity/flutter_web_unity_native.dart';
