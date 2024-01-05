@@ -1,12 +1,11 @@
 import 'dart:convert';
+import 'dart:html' as html;
 import 'dart:js_interop';
+import 'dart:ui_web' as ui;
 
 import 'package:flutter/material.dart';
-
-import 'dart:ui_web' as ui;
-import 'dart:html' as html;
-
-import 'package:flutter_web_unity/src/html_web_widget.dart';
+import 'package:flutter_web_unity/src/html_web_widget_controller.dart';
+import 'package:flutter_web_unity/src/web/html_web_widget_controller_web_impl.dart';
 
 @JS('createUnityNative')
 external void createUnityNative(String name);
@@ -14,29 +13,35 @@ external void createUnityNative(String name);
 @JS('deleteUnityNative')
 external void deleteUnityNative();
 
-class HtmlWebWidgetPlatform extends StatefulWidget {
-  const HtmlWebWidgetPlatform({
+class HtmlWebWidget extends StatefulWidget {
+  const HtmlWebWidget({
     super.key,
     required this.data,
-    this.controller,
+    this.onWidgetCreate,
     this.useCanvas = false,
   });
 
   final Map<String, dynamic> data;
-  final HtmlWebWidgetPlatformCtrlImpl? controller;
+
+  final Function(HtmlWebWidgetController controller)? onWidgetCreate;
   final bool? useCanvas;
 
   @override
-  State<HtmlWebWidgetPlatform> createState() => _HtmlWebWidgetPlatformState();
+  State<HtmlWebWidget> createState() => _HtmlWebWidgetState();
 }
 
-class _HtmlWebWidgetPlatformState extends State<HtmlWebWidgetPlatform> {
+class _HtmlWebWidgetState extends State<HtmlWebWidget> {
+
+  late HtmlWebWidgetController controller;
 
   @override
   void initState() {
     super.initState();
 
-    final sendData = base64.encode(utf8.encode(jsonEncode(widget.data)));
+    controller = HtmlWebWidgetControllerWebImpl();
+    widget.onWidgetCreate?.call(controller);
+
+    final encodeData = base64.encode(utf8.encode(jsonEncode(widget.data)));
 
     // ignore: undefined_prefixed_name
     ui.platformViewRegistry.registerViewFactory('html-element', (viewId) {
@@ -48,27 +53,18 @@ class _HtmlWebWidgetPlatformState extends State<HtmlWebWidgetPlatform> {
         // ..style.width = '100%'
         // ..style.height = '100%';
       } else {
-        debugPrint('${Uri.base.scheme}://${Uri.base.host}:${Uri.base.port}');
+        // debugPrint('${Uri.base.scheme}://${Uri.base.host}:${Uri.base.port}');
         return html.IFrameElement()
           // ..id = 'unity-iframe'
           // ..src = 'http://localhost:${Uri.base.port}/unity/index.html'
-          ..src = '${Uri.base.scheme}://${Uri.base.host}:${Uri.base.port}/assets/packages/flutter_web_unity/assets/unity/index.html?data=$sendData'
+          ..src = '${Uri.base.scheme}://${Uri.base.host}:${Uri.base.port}/assets/packages/flutter_web_unity/assets/unity/index.html?data=$encodeData'
           ..style.border = 'none';
       }
-
-      // c.context2D.fillStyle = "blue";
-      // c.context2D.fillRect(0, 0, c.width ?? 0, c.height ?? 0);
-
-      // final shader = gl.createShader(html.RenderingContext.VERTEX_SHADER);
-      // more gl code here
-
-      // return c;
     });
 
     if (widget.useCanvas == true) {
       create();
     }
-    widget.controller?._setState(this);
   }
 
   Future<void> create() async {
@@ -107,17 +103,5 @@ class _HtmlWebWidgetPlatformState extends State<HtmlWebWidgetPlatform> {
         ],
       ),
     );
-  }
-}
-
-class HtmlWebWidgetPlatformCtrlImpl implements HtmlWebWidgetPlatformCtrl {
-  late _HtmlWebWidgetPlatformState _state;
-  void _setState(_HtmlWebWidgetPlatformState state) {
-    _state = state;
-  }
-
-  @override
-  Future<void> quit() async {
-    _state.quitUnity();
   }
 }

@@ -14,7 +14,7 @@ class FlutterWebUnityWeb extends FlutterWebUnityPlatform {
   FlutterWebUnityWeb() {
     // ignore: undefined_prefixed_name
     // final webUrl = ui.webOnlyAssetManager.getAssetUrl(
-    //   'packages/flutter_web_unity/assets/unity.html',
+    //   'packages/flutter_web_unity/assets/web/unity.html',
     // );
   }
 
