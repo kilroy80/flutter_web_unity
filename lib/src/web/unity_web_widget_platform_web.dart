@@ -4,8 +4,10 @@ import 'dart:js_interop';
 import 'dart:ui_web' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_web_unity/src/html_web_widget_controller.dart';
-import 'package:flutter_web_unity/src/web/html_web_widget_controller_web_impl.dart';
+import 'package:flutter_web_unity/src/help/events.dart';
+import 'package:flutter_web_unity/src/help/types.dart';
+import 'package:flutter_web_unity/src/unity_web_widget_controller.dart';
+import 'package:flutter_web_unity/src/web/unity_web_widget_controller_web_impl.dart';
 
 @JS('createUnityNative')
 external void createUnityNative(String name);
@@ -13,33 +15,36 @@ external void createUnityNative(String name);
 @JS('deleteUnityNative')
 external void deleteUnityNative();
 
-class HtmlWebWidget extends StatefulWidget {
-  const HtmlWebWidget({
+typedef WebUnityWidgetState = _UnityWebWidgetState;
+
+class UnityWebWidget extends StatefulWidget {
+  const UnityWebWidget({
     super.key,
     required this.data,
     this.onWidgetCreate,
+    this.onUnityMessage,
+    this.onUnitySceneLoaded,
     this.useCanvas = false,
   });
 
   final Map<String, dynamic> data;
 
-  final Function(HtmlWebWidgetController controller)? onWidgetCreate;
+  final Function(UnityWebWidgetController controller)? onWidgetCreate;
+  final Function(String message)? onUnityMessage;
+  final Function(String message)? onUnitySceneLoaded;
   final bool? useCanvas;
 
   @override
-  State<HtmlWebWidget> createState() => _HtmlWebWidgetState();
+  State<UnityWebWidget> createState() => _UnityWebWidgetState();
 }
 
-class _HtmlWebWidgetState extends State<HtmlWebWidget> {
+class _UnityWebWidgetState extends State<UnityWebWidget> {
 
-  late HtmlWebWidgetController controller;
+  late UnityWebWidgetController controller;
 
   @override
   void initState() {
     super.initState();
-
-    controller = HtmlWebWidgetControllerWebImpl();
-    widget.onWidgetCreate?.call(controller);
 
     final encodeData = base64.encode(utf8.encode(jsonEncode(widget.data)));
 
@@ -62,9 +67,16 @@ class _HtmlWebWidgetState extends State<HtmlWebWidget> {
       }
     });
 
+    initController();
+
     if (widget.useCanvas == true) {
       create();
     }
+  }
+
+  Future<void> initController() async {
+    controller = await UnityWebWidgetControllerWebImpl.init(0, this);
+    widget.onWidgetCreate?.call(controller);
   }
 
   Future<void> create() async {
