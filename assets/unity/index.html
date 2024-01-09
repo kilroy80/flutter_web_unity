@@ -50,7 +50,7 @@
       const dataParam = urlParams.get('data');
 
       const jsonData = JSON.parse(atob(dataParam));
-      console.log('json data = ' + JSON.stringify(jsonData));
+      // console.log('json data = ' + JSON.stringify(jsonData));
 
       createUnity();
 
@@ -67,6 +67,7 @@
                     productVersion: jsonData.productVersion != null ? jsonData.productVersion : null,
                     matchWebGLToCanvasSize: jsonData.matchWebGLToCanvasSize != null ? jsonData.matchWebGLToCanvasSize : true,
                     devicePixelRatio: jsonData.devicePixelRatio != null ? jsonData.devicePixelRatio : null,
+
                     // companyName: "Company",
                     // productName: "UnityWebGL",
                     // productVersion: "0.1",

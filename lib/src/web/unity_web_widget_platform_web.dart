@@ -4,8 +4,6 @@ import 'dart:js_interop';
 import 'dart:ui_web' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_web_unity/src/help/events.dart';
-import 'package:flutter_web_unity/src/help/types.dart';
 import 'package:flutter_web_unity/src/unity_web_widget_controller.dart';
 import 'package:flutter_web_unity/src/web/unity_web_widget_controller_web_impl.dart';
 
@@ -61,7 +59,6 @@ class _UnityWebWidgetState extends State<UnityWebWidget> {
         // debugPrint('${Uri.base.scheme}://${Uri.base.host}:${Uri.base.port}');
         return html.IFrameElement()
           // ..id = 'unity-iframe'
-          // ..src = 'http://localhost:${Uri.base.port}/unity/index.html'
           ..src = '${Uri.base.scheme}://${Uri.base.host}:${Uri.base.port}/assets/packages/flutter_web_unity/assets/unity/index.html?data=$encodeData'
           ..style.border = 'none';
       }
@@ -101,15 +98,12 @@ class _UnityWebWidgetState extends State<UnityWebWidget> {
         debugPrint(e.toString());
       }
     }
-    // await Future.delayed(const Duration(milliseconds: 250));
   }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - 56.0,
-      child: const Stack(
+    return const SizedBox(
+      child: Stack(
         children: [
           HtmlElementView(viewType: 'html-element'),
         ],
