@@ -62,8 +62,13 @@
                     frameworkUrl: jsonData.frameworkUrl,
                     codeUrl: jsonData.codeUrl,
                     streamingAssetsUrl: jsonData.streamingAssetsUrl,
-                    // companyName: "Seerslab",
-                    // productName: "AvatarViewer",
+                    companyName: jsonData.companyName != null ? jsonData.companyName : null,
+                    productName: jsonData.productName != null ? jsonData.productName : null,
+                    productVersion: jsonData.productVersion != null ? jsonData.productVersion : null,
+                    matchWebGLToCanvasSize: jsonData.matchWebGLToCanvasSize != null ? jsonData.matchWebGLToCanvasSize : true,
+                    devicePixelRatio: jsonData.devicePixelRatio != null ? jsonData.devicePixelRatio : null,
+                    // companyName: "Company",
+                    // productName: "UnityWebGL",
                     // productVersion: "0.1",
                     // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
                     // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
