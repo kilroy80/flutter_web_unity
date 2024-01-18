@@ -59,7 +59,7 @@ class _UnityWebWidgetState extends State<UnityWebWidget> {
         // debugPrint('${Uri.base.scheme}://${Uri.base.host}:${Uri.base.port}');
         return html.IFrameElement()
           // ..id = 'unity-iframe'
-          ..src = '${Uri.base.scheme}://${Uri.base.host}:${Uri.base.port}/assets/packages/flutter_web_unity/assets/unity/index.html?data=$encodeData'
+          ..src = '${Uri.base}/assets/packages/flutter_web_unity/assets/unity/index.html?data=$encodeData'
           ..style.border = 'none';
       }
     });
