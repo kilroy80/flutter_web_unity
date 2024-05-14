@@ -14,6 +14,7 @@ dependencies:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
   stream_transform: ^2.0.0
+  web: ^0.5.1
 
 dev_dependencies:
   flutter_test:
@@ -49,6 +50,7 @@ flutter:
   assets:
     - assets/unity/index.html
     - assets/unity/unity_web.js
+    - assets/unity/web_video.js
 
   # For details regarding assets in packages, see
   # https://flutter.dev/assets-and-images/#from-packages

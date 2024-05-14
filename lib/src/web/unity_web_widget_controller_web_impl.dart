@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:html' as html;
+import 'dart:js_interop';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +11,9 @@ import 'package:flutter_web_unity/src/help/types.dart';
 import 'package:flutter_web_unity/src/unity_web_widget_controller.dart';
 import 'package:flutter_web_unity/src/web/unity_web_widget_platform_web.dart';
 import 'package:stream_transform/stream_transform.dart';
+
+import 'dart:html' as html;
+import 'package:web/web.dart' as web;
 
 class UnityWebEvent {
   UnityWebEvent({
@@ -27,8 +30,8 @@ class UnityWebWidgetControllerWebImpl implements UnityWebWidgetController {
 
   static Registrar? webRegistrar;
 
-  late html.MessageEvent _unityFlutterBiding;
-  late html.MessageEvent _unityFlutterBidingFn;
+  late web.MessageEvent _unityFlutterBiding;
+  late web.MessageEvent _unityFlutterBidingFn;
 
   bool unityReady = false;
   bool unityPause = true;
@@ -98,8 +101,9 @@ class UnityWebWidgetControllerWebImpl implements UnityWebWidgetController {
 
   _registerEvents() {
     if (kIsWeb) {
-      html.window.addEventListener('message', (event) {
-        final raw = (event as html.MessageEvent).data.toString();
+
+      web.window.addEventListener('message', (event) {
+        final raw = (event as web.MessageEvent).data.toString();
         // ignore: unnecessary_null_comparison
         if (raw == '' || raw == null) return;
         if (raw == 'unityReady') {
@@ -111,10 +115,12 @@ class UnityWebWidgetControllerWebImpl implements UnityWebWidgetController {
         }
 
         _processEvents(UnityWebEvent(
-          name: event.data['name'],
-          data: event.data['data'],
+          // name: event.data['name'],
+          // data: event.data['data'],
+          name: event.type,
+          data: event.data,
         ));
-      });
+      } as web.EventListener?);
     }
   }
 
@@ -184,11 +190,17 @@ class UnityWebWidgetControllerWebImpl implements UnityWebWidgetController {
 
   void callUnityFn({required String fnName}) {
     if (kIsWeb) {
-      _unityFlutterBidingFn = html.MessageEvent(
+      // _unityFlutterBidingFn = html.MessageEvent(
+      //   'unityFlutterBidingFnCal',
+      //   data: fnName,
+      // );
+      _unityFlutterBidingFn = web.MessageEvent(
         'unityFlutterBidingFnCal',
-        data: fnName,
+          web.MessageEventInit(
+            data: fnName.toJS,
+          ),
       );
-      html.window.dispatchEvent(_unityFlutterBidingFn);
+      web.window.dispatchEvent(_unityFlutterBidingFn);
     }
   }
 
@@ -198,27 +210,34 @@ class UnityWebWidgetControllerWebImpl implements UnityWebWidgetController {
     required String message,
   }) {
     if (kIsWeb) {
-      _unityFlutterBiding = html.MessageEvent(
+      _unityFlutterBiding = web.MessageEvent(
         'unityFlutterBiding',
-        data: json.encode({
-          'gameObject': gameObject,
-          'methodName': methodName,
-          'message': message,
-        }),
+        // data: json.encode({
+        //   'gameObject': gameObject,
+        //   'methodName': methodName,
+        //   'message': message,
+        // }),
+        web.MessageEventInit(
+          data: json.encode({
+            'gameObject': gameObject,
+            'methodName': methodName,
+            'message': message,
+          }).toJS
+        ),
       );
-      html.window.dispatchEvent(_unityFlutterBiding);
+      web.window.dispatchEvent(_unityFlutterBiding);
       postProcess();
     }
   }
 
   /// This method makes sure Unity has been refreshed and is ready to receive further messages.
   void postProcess() {
-    html.Element? frame = html.document
+    web.Element? frame = web.document
         .querySelector('flt-platform-view')
         ?.querySelector('iframe');
 
     if (frame != null) {
-      (frame as html.IFrameElement).focus();
+      (frame as web.HTMLIFrameElement).focus();
     }
   }
 
@@ -260,9 +279,9 @@ class UnityWebWidgetControllerWebImpl implements UnityWebWidgetController {
   void dispose() {
     _cancelSubscriptions();
     if (kIsWeb) {
-      html.window.removeEventListener('message', (_) {});
-      html.window.removeEventListener('unityFlutterBiding', (event) {});
-      html.window.removeEventListener('unityFlutterBidingFnCal', (event) {});
+      web.window.removeEventListener('message', (_) {} as web.EventListener?);
+      web.window.removeEventListener('unityFlutterBiding', (event) {} as web.EventListener?);
+      web.window.removeEventListener('unityFlutterBidingFnCal', (event) {} as web.EventListener?);
     }
   }
 }

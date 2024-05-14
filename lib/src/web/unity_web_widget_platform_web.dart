@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'dart:html' as html;
 import 'dart:js_interop';
 import 'dart:ui_web' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_web_unity/src/unity_web_widget_controller.dart';
 import 'package:flutter_web_unity/src/web/unity_web_widget_controller_web_impl.dart';
+import 'package:web/web.dart' as web;
 
 @JS('createUnityNative')
 external void createUnityNative(String name);
@@ -50,14 +50,14 @@ class _UnityWebWidgetState extends State<UnityWebWidget> {
     ui.platformViewRegistry.registerViewFactory('html-element', (viewId) {
 
       if (widget.useCanvas == true) {
-        return html.CanvasElement()
+        return web.HTMLCanvasElement()
           ..id = 'unity-canvas';
         // ..style.border = 'none';
         // ..style.width = '100%'
         // ..style.height = '100%';
       } else {
         // debugPrint('${Uri.base.scheme}://${Uri.base.host}:${Uri.base.port}');
-        return html.IFrameElement()
+        return web.HTMLIFrameElement()
           // ..id = 'unity-iframe'
           ..src = '${Uri.base}/assets/packages/flutter_web_unity/assets/unity/index.html?data=$encodeData'
           ..style.border = 'none';
