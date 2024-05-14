@@ -12,7 +12,6 @@ import 'package:flutter_web_unity/src/unity_web_widget_controller.dart';
 import 'package:flutter_web_unity/src/web/unity_web_widget_platform_web.dart';
 import 'package:stream_transform/stream_transform.dart';
 
-import 'dart:html' as html;
 import 'package:web/web.dart' as web;
 
 class UnityWebEvent {
@@ -99,28 +98,50 @@ class UnityWebWidgetControllerWebImpl implements UnityWebWidgetController {
     return channel;
   }
 
+  void readingInterop(web.MessageEvent event) {
+    final raw = (event as web.MessageEvent).data.toString();
+    // ignore: unnecessary_null_comparison
+    if (raw == '' || raw == null) return;
+    if (raw == 'unityReady') {
+      unityReady = true;
+      unityPause = false;
+
+      _unityStreamController.add(UnityCreatedEvent(0, {}));
+      return;
+    }
+
+    _processEvents(UnityWebEvent(
+      // name: event.data['name'],
+      // data: event.data['data'],
+      name: event.type,
+      data: event.data,
+    ));
+  }
+
   _registerEvents() {
     if (kIsWeb) {
 
-      web.window.addEventListener('message', (event) {
-        final raw = (event as web.MessageEvent).data.toString();
-        // ignore: unnecessary_null_comparison
-        if (raw == '' || raw == null) return;
-        if (raw == 'unityReady') {
-          unityReady = true;
-          unityPause = false;
+      web.window.addEventListener('message', readingInterop.toJS);
 
-          _unityStreamController.add(UnityCreatedEvent(0, {}));
-          return;
-        }
-
-        _processEvents(UnityWebEvent(
-          // name: event.data['name'],
-          // data: event.data['data'],
-          name: event.type,
-          data: event.data,
-        ));
-      } as web.EventListener?);
+      // web.window.addEventListener('message', ((event) {
+      //   final raw = (event as web.MessageEvent).data.toString();
+      //   // ignore: unnecessary_null_comparison
+      //   if (raw == '' || raw == null) return;
+      //   if (raw == 'unityReady') {
+      //     unityReady = true;
+      //     unityPause = false;
+      //
+      //     _unityStreamController.add(UnityCreatedEvent(0, {}));
+      //     return;
+      //   }
+      //
+      //   _processEvents(UnityWebEvent(
+      //     // name: event.data['name'],
+      //     // data: event.data['data'],
+      //     name: event.type,
+      //     data: event.data,
+      //   ));
+      // }) as JSExportedDartFunction);
     }
   }
 
@@ -279,9 +300,9 @@ class UnityWebWidgetControllerWebImpl implements UnityWebWidgetController {
   void dispose() {
     _cancelSubscriptions();
     if (kIsWeb) {
-      web.window.removeEventListener('message', (_) {} as web.EventListener?);
-      web.window.removeEventListener('unityFlutterBiding', (event) {} as web.EventListener?);
-      web.window.removeEventListener('unityFlutterBidingFnCal', (event) {} as web.EventListener?);
+      web.window.removeEventListener('message', (_) {} as JSExportedDartFunction);
+      web.window.removeEventListener('unityFlutterBiding', (event) {} as JSExportedDartFunction);
+      web.window.removeEventListener('unityFlutterBidingFnCal', (event) {} as JSExportedDartFunction);
     }
   }
 }

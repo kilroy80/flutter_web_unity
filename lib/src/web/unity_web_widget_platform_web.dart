@@ -51,10 +51,11 @@ class _UnityWebWidgetState extends State<UnityWebWidget> {
 
       if (widget.useCanvas == true) {
         return web.HTMLCanvasElement()
-          ..id = 'unity-canvas';
-        // ..style.border = 'none';
-        // ..style.width = '100%'
-        // ..style.height = '100%';
+          ..id = 'unity-canvas'
+          // ..style.color = 'red'
+          // ..style.border = 'none'
+          ..style.width = '100%'
+          ..style.height = '100%';
       } else {
         // debugPrint('${Uri.base.scheme}://${Uri.base.host}:${Uri.base.port}');
         return web.HTMLIFrameElement()
