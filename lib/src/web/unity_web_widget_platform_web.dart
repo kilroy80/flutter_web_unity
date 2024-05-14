@@ -52,7 +52,6 @@ class _UnityWebWidgetState extends State<UnityWebWidget> {
       if (widget.useCanvas == true) {
         return web.HTMLCanvasElement()
           ..id = 'unity-canvas'
-          // ..style.color = 'red'
           // ..style.border = 'none'
           ..style.width = '100%'
           ..style.height = '100%';
@@ -60,7 +59,7 @@ class _UnityWebWidgetState extends State<UnityWebWidget> {
         // debugPrint('${Uri.base.scheme}://${Uri.base.host}:${Uri.base.port}');
         return web.HTMLIFrameElement()
           // ..id = 'unity-iframe'
-          ..src = '${Uri.base}/assets/packages/flutter_web_unity/assets/unity/index.html?data=$encodeData'
+          ..src = '/assets/packages/flutter_web_unity/assets/unity/index.html?data=$encodeData'
           ..style.border = 'none';
       }
     });

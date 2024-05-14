@@ -98,7 +98,7 @@ class UnityWebWidgetControllerWebImpl implements UnityWebWidgetController {
     return channel;
   }
 
-  void readingInterop(web.MessageEvent event) {
+  void onMessageEvent(web.MessageEvent event) {
     final raw = (event as web.MessageEvent).data.toString();
     // ignore: unnecessary_null_comparison
     if (raw == '' || raw == null) return;
@@ -110,18 +110,19 @@ class UnityWebWidgetControllerWebImpl implements UnityWebWidgetController {
       return;
     }
 
+    var streamData = jsonDecode(jsonEncode(event.data.dartify()));
     _processEvents(UnityWebEvent(
       // name: event.data['name'],
       // data: event.data['data'],
-      name: event.type,
-      data: event.data,
+      name: streamData['name'],
+      data: streamData['data'],
     ));
   }
 
   _registerEvents() {
     if (kIsWeb) {
 
-      web.window.addEventListener('message', readingInterop.toJS);
+      web.window.addEventListener('message', onMessageEvent.toJS);
 
       // web.window.addEventListener('message', ((event) {
       //   final raw = (event as web.MessageEvent).data.toString();
