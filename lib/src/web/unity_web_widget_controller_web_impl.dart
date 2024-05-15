@@ -301,9 +301,9 @@ class UnityWebWidgetControllerWebImpl implements UnityWebWidgetController {
   void dispose() {
     _cancelSubscriptions();
     if (kIsWeb) {
-      web.window.removeEventListener('message', (_) {} as JSExportedDartFunction);
-      web.window.removeEventListener('unityFlutterBiding', (event) {} as JSExportedDartFunction);
-      web.window.removeEventListener('unityFlutterBidingFnCal', (event) {} as JSExportedDartFunction);
+      web.window.removeEventListener('message', null);
+      web.window.removeEventListener('unityFlutterBiding', null);
+      web.window.removeEventListener('unityFlutterBidingFnCal', null);
     }
   }
 }
