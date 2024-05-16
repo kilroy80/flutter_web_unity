@@ -98,8 +98,8 @@ class UnityWebWidgetControllerWebImpl implements UnityWebWidgetController {
     return channel;
   }
 
-  void onMessageEvent(web.MessageEvent event) {
-    final raw = (event as web.MessageEvent).data.toString();
+  void _onMessageEvent(web.MessageEvent event) {
+    final raw = event.data.toString();
     // ignore: unnecessary_null_comparison
     if (raw == '' || raw == null) return;
     if (raw == 'unityReady') {
@@ -112,37 +112,14 @@ class UnityWebWidgetControllerWebImpl implements UnityWebWidgetController {
 
     var streamData = jsonDecode(jsonEncode(event.data.dartify()));
     _processEvents(UnityWebEvent(
-      // name: event.data['name'],
-      // data: event.data['data'],
       name: streamData['name'],
       data: streamData['data'],
     ));
   }
 
-  _registerEvents() {
+  void _registerEvents() {
     if (kIsWeb) {
-
-      web.window.addEventListener('message', onMessageEvent.toJS);
-
-      // web.window.addEventListener('message', ((event) {
-      //   final raw = (event as web.MessageEvent).data.toString();
-      //   // ignore: unnecessary_null_comparison
-      //   if (raw == '' || raw == null) return;
-      //   if (raw == 'unityReady') {
-      //     unityReady = true;
-      //     unityPause = false;
-      //
-      //     _unityStreamController.add(UnityCreatedEvent(0, {}));
-      //     return;
-      //   }
-      //
-      //   _processEvents(UnityWebEvent(
-      //     // name: event.data['name'],
-      //     // data: event.data['data'],
-      //     name: event.type,
-      //     data: event.data,
-      //   ));
-      // }) as JSExportedDartFunction);
+      web.window.addEventListener('message', _onMessageEvent.toJS);
     }
   }
 
